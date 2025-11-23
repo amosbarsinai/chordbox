@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "chordbox"
+version = "0.1.0"
+description = ""
+authors = ["Amos Bar Sinai <amosbarsinai@gmail.com>"]
+include = [
+    "chordbox/*.py",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+rich = "^14.2.0"
+
+[tool.poetry.scripts]
+chordbox = "chordbox.main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
