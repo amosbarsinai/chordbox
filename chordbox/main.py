@@ -2,7 +2,7 @@ import sys
 from . import subcommands
 import pathlib
 from rich import console
-from .core.song import get_songs
+from .song import get_songs
 from . import error
 
 HELP = """Usage:

@@ -1,4 +1,4 @@
-from .core import song
+from . import song
 from . import error
 from os import get_terminal_size
 
