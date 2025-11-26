@@ -1,6 +1,7 @@
 from . import song
 from . import error
 from os import get_terminal_size
+import miniaudio
 
 HELP_LISTSONGS = "Usage: chordbox list [-l | --long]"
 def list_songs(songs: dict[song.Song], args, rich_console) -> bool:
@@ -46,7 +47,7 @@ def list_songs(songs: dict[song.Song], args, rich_console) -> bool:
 HELP_LYRICS = "Usage: chordbox lyrics <SONG>"
 def lyrics(songs: dict[str, song.Song], args) -> bool:
     if len(args) != 1:
-        error.error_subc_args("lyrics", 1, len(args))
+        error.error_subc_args("lyrics", (1,1), len(args))
         print(HELP_LYRICS)
         return False
 
@@ -69,3 +70,40 @@ def lyrics(songs: dict[str, song.Song], args) -> bool:
         return False
     print(lyrics)
     return True
+
+HELP_PLAY = "Usage: chordbox play <SONG> [-l | --loop] [-v | --volume VOLUME]"
+def play(songs: dict[str, song.Song], args, rich_console) -> bool:
+    if len(args) == 0:
+        error.error_subc_args("play", (1,4), 0)
+        print(HELP_PLAY)
+        return False
+    loop = False
+    volume = 1.0
+    songs_to_play: list[song.Song] = list()
+    for arg in args:
+        match arg:
+            case "-h" | "--help":
+                print(HELP_PLAY)
+                return True
+            case "-l" | "--loop":
+                loop = True
+            case "-v" | "--volume":
+                try:
+                    volume_index = args.index(arg) + 1
+                    volume = float(args[volume_index])
+                    if volume < 0.0 or volume > 1.0:
+                        raise ValueError()
+                except (ValueError, IndexError):
+                    error.error("Volume must be a number between 0.0 and 1.0 (inclusive).")
+                    print(HELP_PLAY)
+                    return False
+            case _:
+                if arg in songs:
+                    songs_to_play.append(songs[arg])
+                else:
+                    error.error(f"Song {arg} isn't found in your local music collection.")
+                    return False
+    if len(songs_to_play) == 0:
+        error.error("No songs to play were specified.")
+        print(HELP_PLAY)
+        return False

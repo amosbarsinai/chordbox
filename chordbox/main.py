@@ -51,6 +51,8 @@ def main():
             result = int(not subcommands.list_songs(songs, argv[1:], rich_console))
         case "lyrics":
             result = int(not subcommands.lyrics(songs, argv[1:]))
+        case "play":
+            result = int(not subcommands.play(songs, argv[1:], rich_console))
         case _:
             error.error(f"Unkown subcommand {command}.", file=sys.stderr)
             print(HELP)
